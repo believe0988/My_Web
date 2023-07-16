@@ -1,0 +1,9 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$										https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+#重導向配置
+RewriteRule ^index\.html$ index.php [NC,L]
+RewriteRule ^login\.html$ login.php [NC,L]
+RewriteRule ^logout\.html$ logout.php [NC,L]
+RewriteRule ^sidebar\.html$ webparts/01/sidebar.php [NC,L]

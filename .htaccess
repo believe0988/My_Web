@@ -1,0 +1,8 @@
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$										https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+#重導向配置
+RewriteRule ^index\.html$ index.php [NC,L]
+RewriteRule ^fleet\.html$ fleet.php [NC,L]
+RewriteRule ^header\.html$ /webparts/01/header.php [NC,L]
