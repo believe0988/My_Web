@@ -3647,7 +3647,7 @@ input[type="button"].btn-block {
   display: inline-block;
   margin-left: 0.255em;
   vertical-align: 0.255em;
-  content: "";
+  /* content: ""; */
   border-top: 0.3em solid;
   border-right: 0.3em solid transparent;
   border-bottom: 0;
@@ -12003,4 +12003,27 @@ a[data-toggle="collapse"] {
 
 .subscribe-form .form-control {
   background: #4897fc;
+}
+
+#menu svg {
+  width: 17px;
+  height: 17px;
+  grid-area: svg;
+}
+svg.fa {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.svg_stroke_light {
+  stroke: #f8f9fa;
+}
+#menu a.parent font {
+  font-weight: 300;
+  font-size: 17px;
+  color: var(--light);
+  grid-area: font;
 }

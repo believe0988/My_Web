@@ -1,0 +1,41 @@
+table,
+td {
+    border: 1px solid #333;
+}
+
+thead,
+tfoot {
+    background-color: #333;
+    color: #fff;
+}
+table{
+    width: 100%;
+}
+.checktd{
+    text-align: center;
+}
+.tool{text-align: center;}
+.tool .edit{
+    background: orange;
+    width: 30%;
+    border-radius: 50px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+}
+.tool .edit a{
+    width: 100%;
+    display: block;
+    text-align: center;
+}
+.tool .del{
+    background: palevioletred;
+    width: 30%;
+    border-radius: 50px;
+    display: inline-block;
+    margin: 0 10px 0 10px;
+}
+.tool .del a{
+    width: 100%;
+    display: block;
+    text-align: center;
+}

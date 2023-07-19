@@ -1,4 +1,5 @@
 <?php
+session_start();
 // 引用版面套件
 include("../../pagebase.php");
 include("../../sql/01/sidebarSql.php");
@@ -8,40 +9,37 @@ $sideDAL = new sidebarSql();
 // 版型
 $type = '01';
 $tpl->set('template', 'template/' . $type);
-$getside = $sideDAL->getsidebar();
-$SiedAry = [];
-$SideElse = [];
-// 上層
-for ($i = 0; $i < count($getside); $i++) {
-    if ($getside[$i]["TypeTop"] == 0) {
-        $SiedAry[] = array(
-            "Text" => $getside[$i]["Text"],
-            "ID" => $getside[$i]["ID"],
-        );
-    } else {
-        $SideElse[] = array(
-            "Text" => $getside[$i]["Text"],
-            "TypeTop" => $getside[$i]["TypeTop"],
-        );
-    }
-}
-$NewSideAry = [];
-foreach ($SiedAry as $SiedList) {
-    foreach ($SideElse as $SideList){
-        if($SiedList["ID"] == $SideList["TypeTop"]){
-            $NewSideAry[] = array(
-                "Text"=>$SideList["Text"]
-            );
+$filter = " a.`ParentID`=0 AND a.`Visible`=1";
+$getside = $sideDAL->getsidebar($filter);
+foreach($getside as $rows){
+    $menuID = $rows["MenuID"];
+    $menuName = urlencode($rows["MenuName"]);
+    $menuIcon = urlencode($rows["MenuIcon"]);
+    $menuClass = "";
+    $aryCL = array();
+    $intoAry = array();
+    $filter = " a.`ParentID`='".$menuID."' AND a.`Visible`=1";
+    // if($this->userID != "1") $filter .= " AND a.`IsOA`=0";
+    $dataM2 = $sideDAL->executeRecordset($filter);
+    foreach($dataM2 as $rows2){
+        if($_SESSION["LimitID"] == $rows2["MenuID"]){
+            // print_r($rows2["MenuID"]);
+            $menuClass = "action";
+            $minClass = "active";
         }else{
-            $NewSideAry[] = array(
-                "Text"=>$SiedList["Text"]
-            );
+            $minClass = "";
         }
+        $checkID = $rows2["MenuID"];
+        $checkName = urlencode($rows2["MenuName"]);
+        $checkLink = urlencode($rows2["MenuLink"]);
+        $linkTarget = urlencode($rows2["LinkTarget"]);
+       $aryCL[] = array("MenuID" => $checkID, "MenuName" => $checkName, "MenuLink" => $checkLink, "LinkTarget" => $linkTarget, "minClass" => $minClass);
     }
-
+    $show = (count($aryCL) > 0)?"fa fa-angle-down":"";
+    $aryJ[] = array("MenuID" => $menuID, "MenuName" => $menuName, "MenuIcon" => $menuIcon, "menuClass" => $menuClass, "show" => $show, "childList" => $aryCL);
 }
-print_r($NewSideAry);
-// $tpl->set('getside', $getside);
+$txtJ = urldecode(json_encode($aryJ));
+$tpl->set('txtJ', $txtJ);
 
 // 顯示
 echo $tpl->fetch('template/webparts/' . $type . '/sidebar.html');

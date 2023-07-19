@@ -12,5 +12,6 @@ $tpl->set('webtitle', "Title");
 
 
 unset($_SESSION["LoginUser"]);
+unset($_SESSION["LimitID"]);
 // 網站結束
 echo $tpl->fetch('template/' . $type . '/logout.html');

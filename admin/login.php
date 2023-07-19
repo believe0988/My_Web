@@ -17,7 +17,6 @@ if (!empty($_GET["account"])) {
     $Account = $_GET["account"];
 }
 if (!empty($_GET["pass"])) {
-
     $Password = $_GET["pass"];
 }
 if (!empty($Account) || !empty($Password)) {
