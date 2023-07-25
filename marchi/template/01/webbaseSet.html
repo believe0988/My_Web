@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>
+        <?=$webtitle;?>
+    </title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?= $template; ?>/css/style.css">
+    <script src="<?= $template; ?>/js/jquery.min.js"></script>
+    <script src="<?= $template; ?>/js/popper.js"></script>
+    <script src="<?= $template; ?>/js/bootstrap.min.js"></script>
+    <script src="<?= $template; ?>/js/main.js"></script>
+    <script src="ckeditor/ckeditor.js"></script>
+    <script src="ckfinder/ckfinder.js"></script>
+</head>
+
+<body>
+
+    <div class="wrapper d-flex align-items-stretch">
+        <div class="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+
+            <h2>網站資訊</h2>
+            <p><label>網站標題：</label><input type="text" name="webTitle" id="webTitle" value="<?=$webTitle?>"></p>
+            <p><label>網站描述：</label><input type="text" name="webDescribe" id="webDescribe" value="<?=$webDescribe?>"></p>
+            <p><label>網站Icon：</label><a class="img_box"></a><input type="text" name="webIcon" id="webIcon"
+                    value="<?=$webIcon?>"><b class="group"><a class="btn btn_dark" href="javascript:void(0);"
+                        data-action="btnImg" data-type="Images"><svg class="fa">
+                            <use xlink:href="svg/icons.svg#folder"></use>
+                        </svg></a></b></p>
+
+            <p class="d_flex upBox">
+                <a class="img_box"></a>
+                <font class="col_12 in_group">
+                    <input type="text" id="MenuIcon" name="MenuIcon" data-action="Image" value="" />
+                    <b class="group"><a class="btn btn_dark" href="javascript:void(0);" id="btnImg" data-action="btnImg"
+                            data-type="Images"><svg class="fa">
+                                <use xlink:href="svg/icons.svg#folder"></use>
+                            </svg></a></b>
+                </font>
+            </p>
+
+
+
+            <div class="col_12 form_list"><label>說明</label><textarea class="ckeditor" id="Description"
+                    name="Description"></textarea></div>
+
+
+        </div>
+    </div>
+    <script src="<?= $template; ?>/js/jquery-loading-master/jquery.loading.js"></script>
+    <script>
+        $(function () {
+            $(".sidebar").load("sidebar.html")
+            $("body").loading({
+                theme: 'dark'
+            });
+            setTimeout(function () {
+                $("body").loading("stop")
+            }, 1500);
+        })
+        CKEDITOR.replace('Description', {
+            filebrowserImageBrowseUrl: 'ckfinder/ckfinder.html?resourceType=Book',
+            filebrowserImageUploadUrl: 'ckfinder/core/connector/php/connector.php?command=QuickUpload&type=Book'
+        });
+        var button1 = document.getElementById('btnImg');
+        button1.onclick = function () {
+            selectFileWithCKFinder('btnImg');
+        };
+        function selectFileWithCKFinder(elementId) {
+            CKFinder.popup({
+                chooseFiles: true,
+                width: 800,
+                height: 600,
+                onInit: function (finder) {
+                    finder.on('files:choose', function (evt) {
+                        var file = evt.data.files.first();
+                        var output = document.getElementById(elementId);
+                        output.value = file.getUrl();
+                    });
+
+                    finder.on('file:choose:resizedImage', function (evt) {
+                        var output = document.getElementById(elementId);
+                        output.value = evt.data.resizedUrl;
+                    });
+                }
+            });
+        }
+    </script>
+
+</body>
+
+</html>

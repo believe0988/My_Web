@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title><?=$webtitle;?></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?=$template;?>/css/style.css">
+    <link rel="stylesheet" href="<?=$template;?>/css/userList.css">
+    <script src="<?=$template;?>/js/jquery.min.js"></script>
+    <script src="<?=$template;?>/js/popper.js"></script>
+    <script src="<?=$template;?>/js/bootstrap.min.js"></script>
+    <script src="<?=$template;?>/js/main.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper d-flex align-items-stretch">
+        <div class="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+            <h2 class="mb-4">編輯管理人員</h2>
+            <p class="mb-4"><label>帳號：</label><input type="text" value="<?=$Account;?>" name="Account" id="Account"></p>
+            <p class="mb-4"><label>密碼：</label><input type="text" value="<?=$Password;?>" name="Password" id="Password">
+            </p>
+            <p class="mb-4"><label>是否啟用：</label><input type="radio" name="Enable" class="Enable" value="1">啟用 / <input
+                    type="radio" name="Enable" class="Enable" value="0">不啟用 </p>
+            <p class="mb-4"><label>備註：</label><input type="text" value="<?=$TEXT;?>" name="TEXT" id="TEXT"></p>
+            <hr>
+            <h2 class="mb-4">權限設定</h2>
+            <div id="divMenu"></div>
+            <input type="button" id="btnOK" value="儲存">
+        </div>
+    </div>
+    <script src="<?=$template;?>/js/jquery-loading-master/jquery.loading.js"></script>
+    <script>
+        var txtLJ = '<?=$txtJ;?>';
+        var aryLJ = JSON.parse(txtLJ);
+        $(function () {
+            $(".sidebar").load("sidebar.html")
+            $("body").loading({ theme: 'dark' }); setTimeout(function () { $("body").loading("stop") }, 1500);
+            $("input[name=Enable][value='<?=$Enable;?>']").attr('checked', true)
+        })
+        //
+        if ("<?=$UserID;?>" == "") {
+            var DoType = "insert";
+            var UserID = "";
+        } else {
+            var UserID = "<?=$UserID;?>";
+            var DoType = "save";
+            $("#Account").attr("disabled", true)
+        }
+        $("#btnOK").click(function () {
+            var ids = [];
+            $('input:checkbox[name="MenuID[]"]:checked').each(function (index, element) {
+                ids[ids.length] = $(element).val();
+            });
+            $.ajax({
+                url: 'ajax/AjaxUserEdit.php',
+                async: false,
+                type: 'POST',
+                data: {
+                    "do": DoType,
+                    "UserID": UserID,
+                    "Account": $("#Account").val(),
+                    "Password": $("#Password").val(),
+                    "Enable": $("input[name='Enable']:checked").val(),
+                    "TEXT": $("#TEXT").val(),
+                    "MenuID": ids
+                },
+                dataType: 'json',
+                success: function (obj) {
+                    if (obj.result[0].msg == 0) {
+                        alert("儲存成功!");
+                        history.back();
+                    } else {
+                        alert("儲存失敗!");
+                    }
+                },
+                error: function () {
+
+                }
+
+
+            })
+
+        })
+        $.each(aryLJ, function (a, b) {
+            var list = $('<div></div>').attr('class', 'mb_3 list');
+
+            var parent = $('<font></font>').attr('class', 'el-checkbox parent').html('<input type="checkbox" data-action="chk_parent" name="MenuID[]" value="' + b.MenuID + '"><span class="el-checkbox-style"></span><span>' + b.MenuName + '</span>');
+
+            if (b.aryCL.length > 0) {
+                var div = $('<div></div>').attr('class', 'mt_1 pall_2 pr_4 pl_4 bg_g_100');
+                $.each(b.aryCL, function (c, d) {
+                    var font = $('<font></font>').attr('class', 'el-checkbox mr_5').html('<input type="checkbox" data-action="chkM" data-id="' + b.MenuID + '" name="MenuID[]" value="' + d.MenuID + '"><span class="el-checkbox-style"></span><span>' + d.MenuName + '</span>');
+                    div.append(font);
+                });
+            }
+            $('#divMenu').append(list.append(parent).append(div));
+        });
+        $('input:checkbox[data-action="chk_parent"]').click(function () {
+            var id = $(this).val();
+
+            if ($(this).eq(0).prop("checked") == true) {
+                $('input:checkbox[data-action="chkM"][data-id="' + id + '"]').each(function () {
+                    $(this).prop("checked", true);
+                });
+            } else {
+                $('input:checkbox[data-action="chkM"][data-id="' + id + '"]').each(function () {
+                    $(this).prop("checked", false);
+                });
+            }
+        });
+        <?php if($AllCheckAry != ""):?>
+        <?php foreach($AllCheckAry as $AllCheckList): ?>
+        $('input:checkbox[name="MenuID[]"][value="<?=$AllCheckList["MenuID"] ?>"]').prop('checked', true);
+        <?php endforeach; ?>
+        <?php endif; ?>
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title><?=$webtitle;?></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900" rel="stylesheet">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="<?=$template;?>/css/style.css">
+    <link rel="stylesheet" href="<?=$template;?>/css/userList.css">
+    <script src="<?=$template;?>/js/jquery.min.js"></script>
+    <script src="<?=$template;?>/js/popper.js"></script>
+    <script src="<?=$template;?>/js/bootstrap.min.js"></script>
+    <script src="<?=$template;?>/js/main.js"></script>
+
+</head>
+
+<body>
+
+    <div class="wrapper d-flex align-items-stretch">
+        <div class="sidebar"></div>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+            <h2 class="mb-4">管理人員列表</h2>
+            <div class="insert" id="insert"><a href="userEdit.php?UID=">新增使用者</a></div>
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-1">啟用</th>
+                        <th class="col-3">帳號</th>
+                        <th class="col-1">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if($AllUser != ""):?>
+                    <?php foreach($AllUser as $AllUserList): ?>
+                    <tr>
+                        <td class="checktd">
+                            <?=$AllUserList['Enable'];?>
+                        </td>
+                        <td>
+                            <?=$AllUserList['Account'];?>(
+                            <?=$AllUserList['TEXT'];?>)
+                        </td>
+                        <td class="tool">
+                            <div class="edit" id="edit"><a href="userEdit.php?UID=<?=$AllUserList['ID'];?>">編輯</a></div>
+                            <div class="del" id="del"><a href="#" onclick="del('<?=$AllUserList['ID'];?>')">刪除</a></div>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="<?=$template;?>/js/jquery-loading-master/jquery.loading.js"></script>
+    <script>
+        $(function () {
+            $(".sidebar").load("sidebar.html")
+            $("body").loading({ theme: 'dark' }); setTimeout(function () { $("body").loading("stop") }, 1500);
+        })
+        //
+        function del(UID) {
+
+
+            var checked = confirm("請確認是否刪除帳號");
+            if (checked == true) {
+                $.ajax({
+                    url: 'ajax/AjaxUserEdit.php',
+                    async: false,
+                    type: 'POST',
+                    data: {
+                        "do": "del",
+                        "UserID": UID,
+
+                    },
+                    dataType: 'json',
+                    success: function (obj) {
+                        if (obj.result[0].msg == 0) {
+                            alert("刪除成功!");
+                            history.go(0);
+                        } else {
+                            alert("刪除失敗!");
+                        }
+                    },
+                    error: function () {
+
+                    }
+
+
+                })
+            }
+        }
+    </script>
+
+</body>
+
+</html>
